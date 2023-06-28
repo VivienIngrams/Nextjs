@@ -1,9 +1,19 @@
+import { Fragment } from "react";
+import Head from "next/head";
 import { MongoClient } from "mongodb";
 
 import MeetupList from "../components/meetups/MeetupList";
 
 function HomePage(props) {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>React Meetups</title>
+        <meta name="description" content="Browse a list of nice meetups" />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </Fragment>
+  );
 }
 
 // export async function getServerSideProps(context) {
@@ -18,12 +28,13 @@ function HomePage(props) {
 // }
 
 export async function getStaticProps() {
-
-  const client = await MongoClient.connect('mongodb+srv://vivien:<password>@cluster0.9j3scal.mongodb.net/meetups?retryWrites=true&w=majority');
+  const client = await MongoClient.connect(
+    "mongodb+srv://vivien:<password>@cluster0.9j3scal.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
 
   const db = client.db();
 
-  const meetupsCollection = db.collection('meetups');
+  const meetupsCollection = db.collection("meetups");
 
   const meetups = await meetupsCollection.find().toArray();
 
@@ -31,7 +42,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      meetups: meetups.map(meetup => ({
+      meetups: meetups.map((meetup) => ({
         title: meetup.title,
         address: meetup.address,
         image: meetup.image,
